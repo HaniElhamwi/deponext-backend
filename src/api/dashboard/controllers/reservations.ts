@@ -1,3 +1,4 @@
+import { where } from "lodash/fp";
 import { Core } from "@strapi/strapi";
 
 declare const strapi: Core.Strapi;
@@ -36,5 +37,26 @@ export default {
     }
 
     return reservation;
+  },
+  async findOneByReservationItemId(ctx) {
+    const { reservationItemId } = ctx.params;
+    const reservations = await strapi
+      .documents("api::reservation.reservation")
+      .findMany({
+        filters: {
+          reservationItems: {
+            documentId: reservationItemId,
+          },
+        },
+        populate: {
+          customer: true,
+          reservationItems: {
+            populate: {
+              unit: true,
+            },
+          },
+        },
+      });
+    return reservations.length > 0 ? reservations[0] : ctx.notFound();
   },
 };

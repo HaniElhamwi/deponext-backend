@@ -9,5 +9,14 @@ export default {
         policies: [],
       },
     },
+    // find one by reservation item id
+    {
+      method: "GET",
+      path: "/:reservationItemId",
+      handler: "reservations.findOneByReservationItemId",
+      config: {
+        policies: [],
+      },
+    },
   ],
 };

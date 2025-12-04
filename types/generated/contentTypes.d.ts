@@ -536,10 +536,6 @@ export interface ApiReservationReservation extends Struct.CollectionTypeSchema {
       'api::reservation-item.reservation-item'
     >;
     startDate: Schema.Attribute.Date;
-    storageUnit: Schema.Attribute.Relation<
-      'manyToOne',
-      'api::storage-unit.storage-unit'
-    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -562,6 +558,9 @@ export interface ApiStorageUnitStorageUnit extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    labelDirection: Schema.Attribute.Enumeration<
+      ['left', 'right', 'top', 'bottom']
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -574,10 +573,6 @@ export interface ApiStorageUnitStorageUnit extends Struct.CollectionTypeSchema {
     reservationItems: Schema.Attribute.Relation<
       'oneToMany',
       'api::reservation-item.reservation-item'
-    >;
-    reservations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::reservation.reservation'
     >;
     row: Schema.Attribute.Integer;
     rowSpan: Schema.Attribute.Integer;

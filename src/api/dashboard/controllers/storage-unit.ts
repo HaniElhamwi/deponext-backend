@@ -17,7 +17,7 @@ interface IStorageUnitItem {
   colSpan: number;
   m2: number;
   m3: number;
-  labelDirection: string;
+  labelDirection: "left" | "right" | "top" | "bottom";
 }
 export default {
   async createStorageUnit(ctx) {
@@ -40,7 +40,7 @@ export default {
             colSpan: item.colSpan || 0,
             m2: item.m2 || 0,
             m3: item.m3 || 0,
-            labelDirection: item.labelDirection || "",
+            labelDirection: item.labelDirection,
           },
         });
     });

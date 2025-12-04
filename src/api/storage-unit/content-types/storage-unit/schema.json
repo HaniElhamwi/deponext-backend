@@ -32,17 +32,20 @@
     "storageCode": {
       "type": "string"
     },
-    "reservations": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::reservation.reservation",
-      "mappedBy": "storageUnit"
-    },
     "reservationItems": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::reservation-item.reservation-item",
       "mappedBy": "unit"
+    },
+    "labelDirection": {
+      "type": "enumeration",
+      "enum": [
+        "left",
+        "right",
+        "top",
+        "bottom"
+      ]
     }
   }
 }

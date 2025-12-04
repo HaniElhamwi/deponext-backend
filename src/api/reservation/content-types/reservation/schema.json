@@ -27,12 +27,6 @@
       "type": "boolean",
       "default": true
     },
-    "storageUnit": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::storage-unit.storage-unit",
-      "inversedBy": "reservations"
-    },
     "reservationItems": {
       "type": "relation",
       "relation": "oneToMany",
