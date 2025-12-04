@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "storage_units",
+  "info": {
+    "singularName": "storage-unit",
+    "pluralName": "storage-units",
+    "displayName": "StorageUnit"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "m3": {
+      "type": "float"
+    },
+    "m2": {
+      "type": "float"
+    },
+    "colSpan": {
+      "type": "integer"
+    },
+    "rowSpan": {
+      "type": "integer"
+    },
+    "col": {
+      "type": "integer"
+    },
+    "row": {
+      "type": "integer"
+    },
+    "storageCode": {
+      "type": "string"
+    },
+    "reservations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::reservation.reservation",
+      "mappedBy": "storageUnit"
+    },
+    "reservationItems": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::reservation-item.reservation-item",
+      "mappedBy": "unit"
+    }
+  }
+}

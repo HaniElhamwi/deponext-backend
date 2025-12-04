@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reservation_items",
+  "info": {
+    "singularName": "reservation-item",
+    "pluralName": "reservation-items",
+    "displayName": "ReservationItem"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "reservationStatus": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "reservation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::reservation.reservation",
+      "inversedBy": "reservationItems"
+    },
+    "unit": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::storage-unit.storage-unit",
+      "inversedBy": "reservationItems"
+    },
+    "startDate": {
+      "type": "date"
+    },
+    "endDate": {
+      "type": "date"
+    }
+  }
+}
