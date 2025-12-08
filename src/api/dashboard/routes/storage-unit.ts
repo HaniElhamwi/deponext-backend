@@ -17,5 +17,13 @@ export default {
         policies: [],
       },
     },
+    {
+      method: "POST",
+      path: "/seed",
+      handler: "storage-unit.seedStorageUnits",
+      config: {
+        policies: [],
+      },
+    },
   ],
 };

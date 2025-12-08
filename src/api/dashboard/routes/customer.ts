@@ -25,5 +25,21 @@ export default {
         policies: [],
       },
     },
+    {
+      method: "DELETE",
+      path: "/:customerId",
+      handler: "customer.deleteCustomer",
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: "PUT",
+      path: "/:customerId",
+      handler: "customer.updateCustomer",
+      config: {
+        policies: [],
+      },
+    },
   ],
 };

@@ -167,4 +167,98 @@ export default {
       customer,
     };
   },
+  async deleteCustomer(ctx) {
+    const { customerId } = ctx.params;
+
+    // Check if customer exists
+    const customer = await strapi.documents("api::customer.customer").findOne({
+      documentId: customerId,
+    });
+
+    if (!customer) {
+      return ctx.notFound();
+    }
+
+    // Check if customer has active reservations
+    const activeReservations = await strapi
+      .documents("api::reservation.reservation")
+      .findMany({
+        filters: {
+          customer: {
+            documentId: customerId,
+          },
+          isActive: true,
+        },
+        limit: 1,
+      });
+
+    if (activeReservations.length > 0) {
+      // turkish
+      return ctx.badRequest(
+        "Müşteri aktif rezervasyonlara sahip olduğu için silinemez"
+      );
+    }
+
+    // Delete the customer
+    await strapi.documents("api::customer.customer").delete(customerId);
+
+    return {
+      message: "Müşteri başarıyla silindi",
+      customerId,
+    };
+  },
+  async updateCustomer(ctx) {
+    const { customerId } = ctx.params;
+    const { fullName, email, phone, taxNumber } = ctx.request.body;
+
+    // Check if customer exists
+    const customer = await strapi.documents("api::customer.customer").findOne({
+      documentId: customerId,
+    });
+
+    if (!customer) {
+      return ctx.notFound();
+    }
+
+    // If email is being changed, check if it already exists
+    if (email && email !== customer.email) {
+      const existingCustomer = await strapi
+        .documents("api::customer.customer")
+        .findMany({
+          filters: {
+            email,
+          },
+          limit: 1,
+        });
+
+      if (existingCustomer.length > 0) {
+        return ctx.badRequest("Email zaten mevcut");
+      }
+    }
+
+    // Build update data with only provided fields
+    const updateData: any = {};
+    if (fullName !== undefined) updateData.fullName = fullName;
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
+    if (taxNumber !== undefined) updateData.taxNumber = taxNumber;
+
+    // If no fields to update, return error
+    if (Object.keys(updateData).length === 0) {
+      return ctx.badRequest("Güncelleme için en az bir alan sağlanmalıdır");
+    }
+
+    // Update the customer
+    const updatedCustomer = await strapi
+      .documents("api::customer.customer")
+      .update({
+        documentId: customerId,
+        data: updateData,
+      });
+
+    return {
+      message: "Müşteri başarıyla güncellendi",
+      customer: updatedCustomer,
+    };
+  },
 };
