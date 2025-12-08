@@ -175,7 +175,7 @@ export default {
     // Get pagination parameters from query
     const page = ctx.query.page ? parseInt(ctx.query.page) : 1;
     const pageSize = ctx.query.pageSize ? parseInt(ctx.query.pageSize) : 10;
-    const skip = (page - 1) * pageSize;
+    const offset = (page - 1) * pageSize;
 
     // Get all active reservations with sorting at DB level
     const reservations = await strapi
@@ -188,7 +188,9 @@ export default {
           customer: true,
           reservationItems: {
             populate: {
-              unit: true,
+              unit: {
+                fields: ["storageCode", "id"],
+              },
             },
             filters: {
               // Only get items without endDate (active items)
@@ -201,31 +203,24 @@ export default {
         sort: {
           NextPaymentDue: "asc", // Sort by NextPaymentDue ascending (soonest first)
         },
-        pagination: {
-          start: skip,
-          limit: pageSize,
-        },
+        limit: pageSize,
+        offset: offset,
       });
 
     // Get total count for pagination metadata
-    const total = await strapi
-      .documents("api::reservation.reservation")
-      .findMany({
-        filters: {
-          isActive: true,
-        },
-        pagination: {
-          limit: -1, // Get all to count
-        },
-      });
+    const total = await strapi.documents("api::reservation.reservation").count({
+      filters: {
+        isActive: true,
+      },
+    });
 
     return {
       data: reservations,
       pagination: {
         page,
         pageSize,
-        total: total.length,
-        totalPages: Math.ceil(total.length / pageSize),
+        total,
+        totalPages: Math.ceil(total / pageSize),
       },
     };
   },
