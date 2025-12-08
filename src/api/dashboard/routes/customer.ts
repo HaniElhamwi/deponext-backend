@@ -9,5 +9,21 @@ export default {
         policies: [],
       },
     },
+    {
+      method: "POST",
+      path: "/",
+      handler: "customer.createCustomer",
+      config: {
+        policies: [],
+      },
+    },
+    {
+      method: "POST",
+      path: "/seed",
+      handler: "customer.seedCustomers",
+      config: {
+        policies: [],
+      },
+    },
   ],
 };
