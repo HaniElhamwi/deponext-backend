@@ -1,4 +1,3 @@
-import { where } from "lodash/fp";
 import { Core } from "@strapi/strapi";
 
 declare const strapi: Core.Strapi;

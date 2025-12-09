@@ -3,8 +3,6 @@
  */
 
 import { Core } from "@strapi/strapi";
-import { isArray } from "lodash";
-import { DateTime } from "luxon";
 
 declare const strapi: Core.Strapi;
 
