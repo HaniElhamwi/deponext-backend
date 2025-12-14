@@ -10,17 +10,22 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /opt/app
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install --production=false
+# Enable corepack and pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build Strapi
 ENV NODE_ENV=production
-RUN npm run build
+RUN pnpm build
 
 EXPOSE 1337
 
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "start"]
