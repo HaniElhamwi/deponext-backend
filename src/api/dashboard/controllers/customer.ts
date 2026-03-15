@@ -132,29 +132,34 @@ export default {
     const { fullName, email, phone, taxNumber } = ctx.request.body;
 
     // Validation
-    if (!fullName || !email || !phone) {
-      return ctx.badRequest("fullName, email, and phone are required fields");
+    if (!fullName || !phone) {
+      return ctx.badRequest("fullName and phone are required fields");
     }
 
-    // Check if email already exists
-    const existingCustomer = await strapi
-      .documents("api::customer.customer")
-      .findMany({
-        filters: {
-          email,
-        },
-        limit: 1,
-      });
+    const normalizedEmail =
+      typeof email === "string" && email.trim() ? email.trim() : null;
 
-    if (existingCustomer.length > 0) {
-      return ctx.badRequest("Email already exists");
+    // Check if email already exists when provided
+    if (normalizedEmail) {
+      const existingCustomer = await strapi
+        .documents("api::customer.customer")
+        .findMany({
+          filters: {
+            email: normalizedEmail,
+          },
+          limit: 1,
+        });
+
+      if (existingCustomer.length > 0) {
+        return ctx.badRequest("Email already exists");
+      }
     }
 
     // Create new customer
     const customer = await strapi.documents("api::customer.customer").create({
       data: {
         fullName,
-        email,
+        email: normalizedEmail,
         phone,
         taxNumber: taxNumber || null,
       },
@@ -193,7 +198,7 @@ export default {
     if (activeReservations.length > 0) {
       // turkish
       return ctx.badRequest(
-        "Müşteri aktif rezervasyonlara sahip olduğu için silinemez"
+        "Müşteri aktif rezervasyonlara sahip olduğu için silinemez",
       );
     }
 
@@ -218,13 +223,20 @@ export default {
       return ctx.notFound();
     }
 
+    const normalizedEmail =
+      email === undefined
+        ? undefined
+        : typeof email === "string" && email.trim()
+          ? email.trim()
+          : null;
+
     // If email is being changed, check if it already exists
-    if (email && email !== customer.email) {
+    if (normalizedEmail && normalizedEmail !== customer.email) {
       const existingCustomer = await strapi
         .documents("api::customer.customer")
         .findMany({
           filters: {
-            email,
+            email: normalizedEmail,
           },
           limit: 1,
         });
@@ -237,7 +249,7 @@ export default {
     // Build update data with only provided fields
     const updateData: any = {};
     if (fullName !== undefined) updateData.fullName = fullName;
-    if (email !== undefined) updateData.email = email;
+    if (normalizedEmail !== undefined) updateData.email = normalizedEmail;
     if (phone !== undefined) updateData.phone = phone;
     if (taxNumber !== undefined) updateData.taxNumber = taxNumber;
 

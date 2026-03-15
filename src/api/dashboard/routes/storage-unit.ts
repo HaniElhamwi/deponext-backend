@@ -18,6 +18,14 @@ export default {
       },
     },
     {
+      method: "PUT",
+      path: "/:storageUnitId",
+      handler: "storage-unit.updateStorageUnit",
+      config: {
+        policies: [],
+      },
+    },
+    {
       method: "POST",
       path: "/seed",
       handler: "storage-unit.seedStorageUnits",

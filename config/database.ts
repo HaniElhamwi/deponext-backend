@@ -19,7 +19,7 @@ export default ({ env }) => {
           cipher: env("DATABASE_SSL_CIPHER", undefined),
           rejectUnauthorized: env.bool(
             "DATABASE_SSL_REJECT_UNAUTHORIZED",
-            true
+            true,
           ),
         },
       },
@@ -57,7 +57,7 @@ export default ({ env }) => {
           __dirname,
           "..",
           "..",
-          env("DATABASE_FILENAME", ".tmp/data.db")
+          env("DATABASE_FILENAME", ".tmp/data.db"),
         ),
       },
       useNullAsDefault: true,

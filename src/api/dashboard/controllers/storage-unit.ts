@@ -46,6 +46,62 @@ export default {
     };
   },
 
+  async updateStorageUnit(ctx) {
+    const { storageUnitId } = ctx.params;
+    const {
+      storage_code,
+      storageCode,
+      row,
+      col,
+      rowSpan,
+      colSpan,
+      m2,
+      m3,
+      labelDirection,
+    }: Partial<IStorageUnitItem> & { storageCode?: string } = ctx.request.body;
+
+    const existingStorageUnit = await strapi
+      .documents("api::storage-unit.storage-unit")
+      .findOne({
+        documentId: storageUnitId,
+      });
+
+    if (!existingStorageUnit) {
+      return ctx.notFound();
+    }
+
+    const updateData: Record<string, unknown> = {};
+
+    if (storage_code !== undefined || storageCode !== undefined) {
+      updateData.storageCode = storageCode ?? storage_code ?? "";
+    }
+    if (row !== undefined) updateData.row = row;
+    if (col !== undefined) updateData.col = col;
+    if (rowSpan !== undefined) updateData.rowSpan = rowSpan;
+    if (colSpan !== undefined) updateData.colSpan = colSpan;
+    if (m2 !== undefined) updateData.m2 = m2;
+    if (m3 !== undefined) updateData.m3 = m3;
+    if (labelDirection !== undefined) {
+      updateData.labelDirection = labelDirection;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return ctx.badRequest("Güncelleme için en az bir alan sağlanmalıdır");
+    }
+
+    const storageUnit = await strapi
+      .documents("api::storage-unit.storage-unit")
+      .update({
+        documentId: storageUnitId,
+        data: updateData,
+      });
+
+    return {
+      message: "Depo birimi başarıyla güncellendi",
+      storageUnit,
+    };
+  },
+
   getAllStorageUnits(ctx) {
     return strapi.query("api::storage-unit.storage-unit").findMany({
       populate: {
